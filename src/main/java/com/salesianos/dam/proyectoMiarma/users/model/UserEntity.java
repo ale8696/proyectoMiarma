@@ -53,6 +53,9 @@ public class UserEntity implements UserDetails {
 
     private String fullName;
 
+    @Enumerated(EnumType.STRING)
+    private UserRole role;
+
     @CreatedDate
     private LocalDateTime createdAt;
 
@@ -61,7 +64,7 @@ public class UserEntity implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return null;
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     @Override

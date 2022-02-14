@@ -7,6 +7,7 @@ import io.jsonwebtoken.security.SignatureException;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
+import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
 import java.time.LocalDateTime;
@@ -15,6 +16,7 @@ import java.util.Date;
 import java.util.UUID;
 
 @Log
+@Service
 public class JwtProvider {
 
     public static final String TOKEN_TYPE = "JWT";

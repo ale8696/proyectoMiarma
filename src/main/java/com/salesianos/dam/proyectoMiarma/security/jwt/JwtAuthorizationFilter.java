@@ -63,11 +63,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
-        // 2.1 Si es válido, autenticamos al usuario
-
-        // 2.2 Si no es válido, lanzamos una excepcion
-
-
 
     }
 
