@@ -1,5 +1,6 @@
 package com.salesianos.dam.proyectoMiarma.users.model;
 
+import com.salesianos.dam.proyectoMiarma.model.Post;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -29,19 +30,9 @@ public class UserEntity implements UserDetails {
 
 
     @Id
-    @GeneratedValue(generator = "UUID")
-    @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator",
-            parameters = {
-                    @org.hibernate.annotations.Parameter(
-                            name = "uuid_gen_strategy_class",
-                            value = "org.hibernate.id.uuid.CustomVersionOneStrategy"
-                    )
-            }
-    )
+    @GeneratedValue
     @Column(name = "id", updatable = false, nullable = false)
-    private UUID id;
+    private Long id;
 
     @NaturalId
     @Column(unique = true, updatable = false)
@@ -52,6 +43,11 @@ public class UserEntity implements UserDetails {
     private String avatar;
 
     private String fullName;
+
+    private boolean privacity;
+
+    @OneToMany
+    private List<Post> posts;
 
     @Enumerated(EnumType.STRING)
     private UserRole role;

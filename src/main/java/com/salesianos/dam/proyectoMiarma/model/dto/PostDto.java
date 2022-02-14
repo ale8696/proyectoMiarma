@@ -1,25 +1,19 @@
-package com.salesianos.dam.proyectoMiarma.model;
+package com.salesianos.dam.proyectoMiarma.model.dto;
 
 import lombok.*;
 
-import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.io.File;
 
-@Entity
 @NoArgsConstructor @AllArgsConstructor @Builder
 @Getter @Setter
-public class Publicacion {
+public class PostDto {
 
     // Attributes
-    @Id
-    @GeneratedValue
-    private Long id;
-
     private String titulo;
     private String texto;
     private File doc;
-    private boolean publica;
+    private boolean privacity;
 
 }

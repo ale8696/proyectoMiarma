@@ -13,6 +13,7 @@ public class CreateUserDto {
     private String avatar;
     private String fullname;
     private String email;
+    private boolean privacity;
     private String password;
     private String password2;
 
