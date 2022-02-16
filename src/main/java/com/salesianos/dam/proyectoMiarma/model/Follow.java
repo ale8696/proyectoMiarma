@@ -28,7 +28,7 @@ public class Follow {
 
     @Builder.Default
     @CreatedDate
-    private LocalDateTime followingSince = LocalDateTime.now();
+    private LocalDateTime createdAt = LocalDateTime.now();
 
     @Builder.Default
     private boolean accepted = false;

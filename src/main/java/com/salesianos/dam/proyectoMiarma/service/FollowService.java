@@ -4,6 +4,7 @@ import com.salesianos.dam.proyectoMiarma.error.exception.ListEntityNotFoundExcep
 import com.salesianos.dam.proyectoMiarma.error.exception.SingleEntityNotFoundException;
 import com.salesianos.dam.proyectoMiarma.model.Follow;
 import com.salesianos.dam.proyectoMiarma.model.FollowPK;
+import com.salesianos.dam.proyectoMiarma.model.dto.FollowDto;
 import com.salesianos.dam.proyectoMiarma.repository.FollowRepository;
 import com.salesianos.dam.proyectoMiarma.service.base.BaseService;
 import com.salesianos.dam.proyectoMiarma.users.model.UserEntity;
@@ -55,8 +56,8 @@ public class FollowService extends BaseService<Follow, FollowPK, FollowRepositor
         return false;
     }
 
-    public List<Follow> getPetitions() {
-        List<Follow> petitions = repository.findByAccepted(false);
+    public List<FollowDto> getPetitions(UserEntity currentUser) {
+        List<FollowDto> petitions = repository.findByAccepted(false, currentUser.getNick());
         if (petitions.isEmpty()) {
             throw new ListEntityNotFoundException(Follow.class);
         }
