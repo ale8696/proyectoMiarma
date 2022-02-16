@@ -1,5 +1,6 @@
 package com.salesianos.dam.proyectoMiarma.users.model;
 
+import com.salesianos.dam.proyectoMiarma.model.Follow;
 import com.salesianos.dam.proyectoMiarma.model.Post;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -32,6 +33,8 @@ public class UserEntity implements UserDetails {
     @Column(unique = true, updatable = false)
     private String email;
 
+    private String nick;
+
     private String password;
 
     private String avatar;
@@ -42,6 +45,12 @@ public class UserEntity implements UserDetails {
 
     @OneToMany(mappedBy = "owner")
     private List<Post> posts;
+
+    @OneToMany
+    private List<Follow> following;
+
+    @OneToMany
+    private List<Follow> followers;
 
     @Enumerated(EnumType.STRING)
     private UserRole role;

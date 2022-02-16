@@ -21,7 +21,7 @@ public class UserEntityService extends BaseService<UserEntity, UUID, UserEntityR
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+    public UserEntity loadUserByUsername(String email) throws UsernameNotFoundException {
         return this.repository.findFirstByEmail(email)
                 .orElseThrow(()-> new UsernameNotFoundException(email + " not found"));
     }
