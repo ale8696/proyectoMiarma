@@ -23,7 +23,7 @@ public class UserEntityService extends BaseService<UserEntity, UUID, UserEntityR
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
         return this.repository.findFirstByEmail(email)
-                .orElseThrow(()-> new UsernameNotFoundException(email + " no encontrado"));
+                .orElseThrow(()-> new UsernameNotFoundException(email + " not found"));
     }
 
     public UserEntity save(CreateUserDto newUser) {
@@ -31,8 +31,9 @@ public class UserEntityService extends BaseService<UserEntity, UUID, UserEntityR
             UserEntity userEntity = UserEntity.builder()
                     .password(passwordEncoder.encode(newUser.getPassword()))
                     .avatar(newUser.getAvatar())
-                    .fullName(newUser.getFullname())
+                    .fullName(newUser.getFullName())
                     .email(newUser.getEmail())
+                    .privacity(newUser.isPrivacity())
                     .role(UserRole.USER)
                     .build();
             return save(userEntity);

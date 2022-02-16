@@ -11,8 +11,8 @@ import java.io.File;
 public class PostDto {
 
     // Attributes
-    private String titulo;
-    private String texto;
+    private String title;
+    private String text;
     private File doc;
     private boolean privacity;
 

@@ -1,10 +1,7 @@
 package com.salesianos.dam.proyectoMiarma.users.model;
 
 import com.salesianos.dam.proyectoMiarma.model.Post;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NaturalId;
 import org.springframework.data.annotation.CreatedDate;
@@ -17,15 +14,12 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
-import java.util.UUID;
 
 @Entity
 @Table(name="users")
 @EntityListeners(AuditingEntityListener.class)
-@Data
-@NoArgsConstructor
-@AllArgsConstructor
-@Builder
+@NoArgsConstructor @AllArgsConstructor @Builder
+@Getter @Setter
 public class UserEntity implements UserDetails {
 
 
@@ -46,7 +40,7 @@ public class UserEntity implements UserDetails {
 
     private boolean privacity;
 
-    @OneToMany
+    @OneToMany(mappedBy = "owner")
     private List<Post> posts;
 
     @Enumerated(EnumType.STRING)
@@ -58,6 +52,7 @@ public class UserEntity implements UserDetails {
     @Builder.Default
     private LocalDateTime lastPasswordChangeAt = LocalDateTime.now();
 
+    // Methods
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));

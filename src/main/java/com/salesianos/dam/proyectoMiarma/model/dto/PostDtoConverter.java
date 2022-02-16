@@ -8,8 +8,8 @@ public class PostDtoConverter {
 
     public Post postDtoToPost(PostDto dto) {
         return Post.builder()
-                .titulo(dto.getTitulo())
-                .texto(dto.getTexto())
+                .title(dto.getTitle())
+                .text(dto.getText())
                 .doc(dto.getDoc())
                 .privacity(dto.isPrivacity())
                 .build();

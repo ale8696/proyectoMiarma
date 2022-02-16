@@ -1,13 +1,13 @@
 package com.salesianos.dam.proyectoMiarma.model;
 
+import com.salesianos.dam.proyectoMiarma.users.model.UserEntity;
 import lombok.*;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.io.File;
 
 @Entity
+@Table(name = "post")
 @NoArgsConstructor @AllArgsConstructor @Builder
 @Getter @Setter
 public class Post {
@@ -17,10 +17,12 @@ public class Post {
     @GeneratedValue
     private Long id;
 
-    private String titulo;
-    private String texto;
+    private String title;
+    private String text;
     private File doc;
     private boolean privacity;
-    private String ownerName;
+
+    @ManyToOne
+    private UserEntity owner;
 
 }
