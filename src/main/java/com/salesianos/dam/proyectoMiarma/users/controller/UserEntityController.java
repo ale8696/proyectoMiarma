@@ -1,11 +1,12 @@
 package com.salesianos.dam.proyectoMiarma.users.controller;
 
 import com.salesianos.dam.proyectoMiarma.users.dto.CreateUserDto;
-import com.salesianos.dam.proyectoMiarma.users.dto.GetUserDto;
+import com.salesianos.dam.proyectoMiarma.users.dto.LoginUserDto;
 import com.salesianos.dam.proyectoMiarma.users.dto.UserDtoConverter;
 import com.salesianos.dam.proyectoMiarma.users.model.UserEntity;
 import com.salesianos.dam.proyectoMiarma.users.service.UserEntityService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,16 +20,12 @@ public class UserEntityController {
     private final UserDtoConverter userDtoConverter;
 
     @PostMapping("/auth/register")
-    public ResponseEntity<GetUserDto> nuevoUsuario(@RequestBody CreateUserDto newUser) {
-        UserEntity saved = userEntityService.save(newUser);
+    public ResponseEntity<LoginUserDto> nuevoUsuario(@RequestBody CreateUserDto newUser) {
+        LoginUserDto saved = userEntityService.createUser(newUser);
 
-        if (saved == null)
-            return ResponseEntity.badRequest().build();
-        else
-            return ResponseEntity.ok(userDtoConverter.convertUserEntityToGetUserDto(saved));
+        return ResponseEntity.status(HttpStatus.CREATED).body(saved);
+
     }
 
-    //@PostMapping("auth/login")
-    //public
 
 }

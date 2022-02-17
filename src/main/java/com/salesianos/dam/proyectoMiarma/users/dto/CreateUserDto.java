@@ -10,6 +10,7 @@ import lombok.*;
 public class CreateUserDto {
 
     private String avatar;
+    private String nick;
     private String fullName;
     private String email;
     private boolean privacity;

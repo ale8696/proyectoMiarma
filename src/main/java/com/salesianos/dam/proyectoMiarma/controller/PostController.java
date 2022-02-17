@@ -31,10 +31,10 @@ public class PostController {
         return ResponseEntity.ok(postService.getPost(id, currentUser));
     }
 
-    @GetMapping("{nick}")
-    public ResponseEntity<List<PostDto>> getUserPosts(@PathVariable String nick,
-                                                      @AuthenticationPrincipal UserEntity currentUser) {
-        return ResponseEntity.ok(postService.get)
-    }
+    //@GetMapping("{nick}")
+    //public ResponseEntity<List<PostDto>> getUserPosts(@PathVariable String nick,
+    //                                                  @AuthenticationPrincipal UserEntity currentUser) {
+    //    return ResponseEntity.ok(postService.get)
+    //}
 
 }
