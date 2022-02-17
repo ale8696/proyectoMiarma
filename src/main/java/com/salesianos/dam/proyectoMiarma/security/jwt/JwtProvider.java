@@ -53,15 +53,15 @@ public class JwtProvider {
                 .setHeaderParam("typ", TOKEN_TYPE)
                 .setSubject(user.getId().toString())
                 .setIssuedAt(tokenExpirationDate)
-                .claim("fullname", user.getFullName())
+                .claim("nick", user.getNick())
                 .signWith(Keys.hmacShaKeyFor(jwtSecret.getBytes()))
                 .compact();
 
 
     }
 
-    public UUID getUserIdFromJwt(String token) {
-        return UUID.fromString(parser.parseClaimsJws(token).getBody().getSubject());
+    public Long getUserIdFromJwt(String token) {
+        return Long.getLong(parser.parseClaimsJws(token).getBody().getSubject());
     }
 
     public boolean validateToken(String token) {

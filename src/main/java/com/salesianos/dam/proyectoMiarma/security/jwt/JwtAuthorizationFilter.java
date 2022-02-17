@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
-import java.util.UUID;
 
 @Log
 @Component
@@ -37,7 +36,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         try {
             if (StringUtils.hasText(token) && jwtProvider.validateToken(token)) {
 
-                UUID userId = jwtProvider.getUserIdFromJwt(token);
+                Long userId = jwtProvider.getUserIdFromJwt(token);
 
                 Optional<UserEntity> userEntity = userService.findById(userId);
 

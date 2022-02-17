@@ -10,6 +10,7 @@ import com.salesianos.dam.proyectoMiarma.model.dto.PostDtoConverter;
 import com.salesianos.dam.proyectoMiarma.repository.PostRepository;
 import com.salesianos.dam.proyectoMiarma.service.base.BaseService;
 import com.salesianos.dam.proyectoMiarma.users.model.UserEntity;
+import com.salesianos.dam.proyectoMiarma.users.service.UserEntityService;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ public class PostService extends BaseService<Post, Long, PostRepository> {
 
     private final PostDtoConverter postDtoConverter;
     private final FileSystemStorageService storageService;
+    private final UserEntityService userEntityService;
 
 
     public PostDto getPost(Long id, UserEntity currentUser){
@@ -49,14 +51,21 @@ public class PostService extends BaseService<Post, Long, PostRepository> {
         return list;
     }
 
-    // TODO
-    //public List<PostDto> getUserPosts(String nick, UserEntity currentUser) {
-    //    List<PostDto> list = repository.userPosts(nick);
-    //    if (list.isEmpty()) {
-    //        throw new ListEntityNotFoundException(Post.class);
-    //    } else if ()
-    //    List<PostDto> publicList = list.stream().filter(p -> !p.isPrivacity()).toList();
-    //}
+
+    public List<PostDto> getUserPosts(String nick, UserEntity currentUser) {
+        List<PostDto> list = repository.userPosts(nick);
+        if (list.isEmpty()) {
+            throw new ListEntityNotFoundException(Post.class);
+        }
+        List<PostDto> publicList = list.stream().filter(p -> !p.isPrivacity()).toList();
+        UserEntity user = userEntityService.loadUserByNick(nick);
+        if (currentUser.getFollowing().stream().anyMatch(
+                f -> f.getFollowing() == user || f.isAccepted())) {
+            return list;
+        } else {
+            return list.stream().filter(p -> !p.isPrivacity()).toList();
+        }
+    }
 
     public List<PostDto> getMyPosts(UserEntity currentUser) {
         List<PostDto> list = repository.userPosts(currentUser.getNick());
@@ -81,18 +90,23 @@ public class PostService extends BaseService<Post, Long, PostRepository> {
         return postDtoConverter.postToPostDto(repository.save(post));
     }
 
+    public PostDto putPost(Long id, PostDto postDto, MultipartFile file){
 
-    // TODO
-    //public Post putPost(Long id, PostDto postDto, UserEntity user){
-    //    repository.findById(id).map(p->{
-    //        p.setTitle(postDto.getTitle());
-    //        p.setText(postDto.getText());
-    //        p.setDoc(postDto.getDoc());
-    //        repository.save(p);
-    //        return postDto;
-    //    }).orElseThrow(()-> new SingleEntityNotFoundException(id.toString(), Post.class));
-    //}
+        String filename = storageService.store(file);
 
+        String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/download/")
+                .path(filename)
+                .toUriString();
+
+        return repository.findById(id).map(p->{
+            p.setTitle(postDto.getTitle());
+            p.setText(postDto.getText());
+            p.setDoc(uri);
+            repository.save(p);
+            return postDto;
+        }).orElseThrow(()-> new SingleEntityNotFoundException(id.toString(), Post.class));
+    }
 
     // TODO
     public void delete(Long id){

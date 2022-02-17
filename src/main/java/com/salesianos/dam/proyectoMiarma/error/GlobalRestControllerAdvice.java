@@ -1,6 +1,7 @@
 package com.salesianos.dam.proyectoMiarma.error;
 
 import com.salesianos.dam.proyectoMiarma.error.exception.EntityNotFoundException;
+import com.salesianos.dam.proyectoMiarma.error.exception.PasswordNotMatchException;
 import com.salesianos.dam.proyectoMiarma.error.exception.UnauthoricedUserException;
 import com.salesianos.dam.proyectoMiarma.error.model.ApiError;
 import com.salesianos.dam.proyectoMiarma.error.model.ApiSubError;
@@ -34,6 +35,11 @@ public class GlobalRestControllerAdvice extends ResponseEntityExceptionHandler {
     @ExceptionHandler({UnauthoricedUserException.class})
     public ResponseEntity<?> handleUnauthorizedUserException(UnauthoricedUserException ex, WebRequest request) {
         return buildApiError401(ex, request);
+    }
+
+    @ExceptionHandler({PasswordNotMatchException.class})
+    public ResponseEntity<?> handlePasswordNotMatchException(PasswordNotMatchException ex, WebRequest request) {
+        return buildApiError400(ex, request);
     }
 
 
@@ -86,6 +92,10 @@ public class GlobalRestControllerAdvice extends ResponseEntityExceptionHandler {
 
     private ResponseEntity<Object> buildApiError404(Exception ex, WebRequest request) {
         return buildApiErrorStatus(HttpStatus.NOT_FOUND, ex, request);
+    }
+
+    private ResponseEntity<Object> buildApiError400(Exception ex, WebRequest request) {
+        return buildApiErrorStatus(HttpStatus.BAD_REQUEST, ex, request);
     }
 
     private ResponseEntity<Object> buildApiErrorStatus(HttpStatus status, Exception ex, WebRequest request) {

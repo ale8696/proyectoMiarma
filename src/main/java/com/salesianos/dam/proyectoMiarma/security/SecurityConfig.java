@@ -46,13 +46,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-
                 .and()
                 .authorizeRequests()
-                //.antMatchers(HttpMethod.POST, "/producto/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.GET, "/follow/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/auth/**").anonymous()
-                .antMatchers("/h2-console/**", "/v3/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                .antMatchers("/h2-console/**").permitAll()
                 .anyRequest().authenticated();
 
 

@@ -27,7 +27,7 @@ public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
         httpServletResponse.setContentType("application/json");
 
         Map<String, String> mensajes =
-                Map.of("mensaje", e.getMessage());
+                Map.of("mensajeeee", e.getMessage());
 
         String strjson = mapper.writeValueAsString(mensajes);
 

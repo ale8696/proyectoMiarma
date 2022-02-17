@@ -1,5 +1,6 @@
 package com.salesianos.dam.proyectoMiarma.users.service;
 
+import com.salesianos.dam.proyectoMiarma.error.exception.PasswordNotMatchException;
 import com.salesianos.dam.proyectoMiarma.security.jwt.JwtProvider;
 import com.salesianos.dam.proyectoMiarma.service.base.BaseService;
 import com.salesianos.dam.proyectoMiarma.users.dto.CreateUserDto;
@@ -8,6 +9,8 @@ import com.salesianos.dam.proyectoMiarma.users.dto.UserDtoConverter;
 import com.salesianos.dam.proyectoMiarma.users.model.UserEntity;
 import com.salesianos.dam.proyectoMiarma.users.repository.UserEntityRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,11 +24,9 @@ import java.util.UUID;
 
 @Service("userDetailsService")
 @RequiredArgsConstructor
-public class UserEntityService extends BaseService<UserEntity, UUID, UserEntityRepository> implements UserDetailsService {
+public class UserEntityService extends BaseService<UserEntity, Long, UserEntityRepository> implements UserDetailsService {
 
     private final UserDtoConverter userDtoConverter;
-    private final AuthenticationManager authenticationManager;
-    private final JwtProvider jwtProvider;
 
     @Override
     public UserEntity loadUserByUsername(String email) throws UsernameNotFoundException {
@@ -38,26 +39,32 @@ public class UserEntityService extends BaseService<UserEntity, UUID, UserEntityR
                 .orElseThrow(()-> new UsernameNotFoundException(nick + " not found"));
     }
 
-    public LoginUserDto createUser(CreateUserDto newUser) {
-        if (newUser.getPassword().contentEquals(newUser.getPassword2())) {
-            UserEntity userEntity = userDtoConverter.createUserDtoToUserEntity(newUser);
+    public void createUser(CreateUserDto newUser) {
 
-            Authentication authentication = authenticationManager.authenticate(
-                    new UsernamePasswordAuthenticationToken(
-                            userEntity.getNick(),
-                            userEntity.getPassword()
-                    )
-            );
+        //if (newUser.getPassword().contentEquals(newUser.getPassword2())) {
+//
+//
+        //    UserEntity userEntity = repository.save(userDtoConverter.createUserDtoToUserEntity(newUser));
+//
+        //    Authentication authentication = authenticationManager.authenticate(
+        //            new UsernamePasswordAuthenticationToken(
+        //                    userEntity.getNick(),
+        //                    userEntity.getPassword()
+        //            )
+        //    );
+//
+        //    SecurityContextHolder.getContext().setAuthentication(authentication);
+//
+        //    String jwt = jwtProvider.generateToken(authentication);
+//
+        //    LoginUserDto loginUserDto = userDtoConverter.userEntityToLoginUserDto(userEntity, jwt);
+//
+        //    return loginUserDto;
+//
+        //}else {
+        //    throw new PasswordNotMatchException();
+        //}
 
-            SecurityContextHolder.getContext().setAuthentication(authentication);
-
-            String jwt = jwtProvider.generateToken(authentication);
-
-            return userDtoConverter.userEntityToLoginUserDto(repository.save(userEntity), jwt);
-        } else {
-            // RETURN EXCEPTION BAD REQUEST
-            return null;
-        }
     }
 
 
