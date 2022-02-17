@@ -15,4 +15,14 @@ public class PostDtoConverter {
                 .build();
     }
 
+    public PostDto postToPostDto(Post post) {
+        return PostDto.builder()
+                .title(post.getTitle())
+                .text(post.getText())
+                .doc(post.getDoc())
+                .privacity(post.isPrivacity())
+                .Owner(post.getOwner().getNick())
+                .build();
+    }
+
 }

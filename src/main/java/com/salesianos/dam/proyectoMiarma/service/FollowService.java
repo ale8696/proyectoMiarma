@@ -2,6 +2,7 @@ package com.salesianos.dam.proyectoMiarma.service;
 
 import com.salesianos.dam.proyectoMiarma.error.exception.ListEntityNotFoundException;
 import com.salesianos.dam.proyectoMiarma.error.exception.SingleEntityNotFoundException;
+import com.salesianos.dam.proyectoMiarma.error.exception.UnauthoricedUserException;
 import com.salesianos.dam.proyectoMiarma.model.Follow;
 import com.salesianos.dam.proyectoMiarma.model.FollowPK;
 import com.salesianos.dam.proyectoMiarma.model.dto.FollowDto;
@@ -21,7 +22,7 @@ public class FollowService extends BaseService<Follow, FollowPK, FollowRepositor
     private final UserEntityService userEntityService;
 
     public boolean postPetition(UserEntity currentUser, String nick) {
-        UserEntity user = userEntityService.loadUserByUsername(nick);
+        UserEntity user = userEntityService.loadUserByNick(nick);
         Follow petition = new Follow();
         petition.addFollow(currentUser, user);
         if (petition == repository.save(petition)) {
@@ -34,18 +35,17 @@ public class FollowService extends BaseService<Follow, FollowPK, FollowRepositor
         Follow petition = repository.findById(id).orElseThrow(() ->
                 new SingleEntityNotFoundException(id.toString(), Follow.class));
         if (!currentUser.equals(petition.getFollowing())) {
-            // EXCEPCION NO AUTORIZADO!!
+            throw new UnauthoricedUserException();
         }
         petition.setAccepted(true);
         return true;
     }
 
-    // LAS CONDICIONES PARA DEVOLVER TRUE NECESITAN UN REPASO
     public boolean declinePetition(UserEntity currentUser, FollowPK id) {
         Follow petition = repository.findById(id).orElseThrow(() ->
                 new SingleEntityNotFoundException(id.toString(), Follow.class));
         if (!currentUser.equals(petition.getFollowing())) {
-            // EXCEPCION NO AUTORIZADO!!
+            throw new UnauthoricedUserException();
         }
         UserEntity follower = petition.getFollower();
         petition.removeFollow(follower, currentUser);

@@ -2,6 +2,8 @@ package com.salesianos.dam.proyectoMiarma.service;
 
 import com.salesianos.dam.proyectoMiarma.error.exception.ListEntityNotFoundException;
 import com.salesianos.dam.proyectoMiarma.error.exception.SingleEntityNotFoundException;
+import com.salesianos.dam.proyectoMiarma.error.exception.UnauthoricedUserException;
+import com.salesianos.dam.proyectoMiarma.model.Follow;
 import com.salesianos.dam.proyectoMiarma.model.Post;
 import com.salesianos.dam.proyectoMiarma.model.dto.PostDto;
 import com.salesianos.dam.proyectoMiarma.model.dto.PostDtoConverter;
@@ -11,6 +13,8 @@ import com.salesianos.dam.proyectoMiarma.users.model.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.apache.catalina.User;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.util.List;
 
@@ -19,15 +23,23 @@ import java.util.List;
 public class PostService extends BaseService<Post, Long, PostRepository> {
 
     private final PostDtoConverter postDtoConverter;
+    private final FileSystemStorageService storageService;
 
-    public Post getPost(Long id, UserEntity user){
+
+    public PostDto getPost(Long id, UserEntity currentUser){
         Post post = repository.findById(id).orElseThrow(()->
                 new SingleEntityNotFoundException(id.toString(), Post.class));
-        if (post.isPrivacity() || !post.getOwner().getUsername().equals(user.getUsername())) {
-            // UnauthorizedException!!!
+
+        Follow follow = currentUser.getFollowing().stream()
+                .filter(f -> f.getFollowing() == post.getOwner())
+                .findFirst().orElseThrow(() -> new UnauthoricedUserException());
+
+        if (post.isPrivacity() || follow == null) {
+            throw  new UnauthoricedUserException();
         }
-        return post;
+        return postDtoConverter.postToPostDto(post);
     }
+
 
     public List<PostDto> getPublicPosts(){
         List<PostDto> list = repository.publicPosts(false);
@@ -37,33 +49,56 @@ public class PostService extends BaseService<Post, Long, PostRepository> {
         return list;
     }
 
-    public List<PostDto> getUserPosts(String userName, UserEntity currentUser) {
-        List<PostDto> list = repository.userPosts(userName);
+    // TODO
+    //public List<PostDto> getUserPosts(String nick, UserEntity currentUser) {
+    //    List<PostDto> list = repository.userPosts(nick);
+    //    if (list.isEmpty()) {
+    //        throw new ListEntityNotFoundException(Post.class);
+    //    } else if ()
+    //    List<PostDto> publicList = list.stream().filter(p -> !p.isPrivacity()).toList();
+    //}
+
+    public List<PostDto> getMyPosts(UserEntity currentUser) {
+        List<PostDto> list = repository.userPosts(currentUser.getNick());
         if (list.isEmpty()) {
             throw new ListEntityNotFoundException(Post.class);
         }
         return list;
     }
 
-    public Post postPost(PostDto postDto){
-        return repository.save(postDtoConverter.postDtoToPost(postDto));
+    public PostDto postPost(PostDto postDto, UserEntity currentUser, MultipartFile file){
+        Post post = postDtoConverter.postDtoToPost(postDto);
+
+        String filename = storageService.store(file);
+
+        String uri = ServletUriComponentsBuilder.fromCurrentContextPath()
+                .path("/download/")
+                .path(filename)
+                .toUriString();
+
+        post.setOwner(currentUser);
+        post.setDoc(uri);
+        return postDtoConverter.postToPostDto(repository.save(post));
     }
 
-    /*
-    public Post putPost(Long id, PostDto postDto, UserEntity user){
-        repository.findById(id).map(p->{
-            p.setTitle(postDto.getTitle());
-            p.setText(postDto.getText());
-            p.setDoc(postDto.getDoc());
-            repository.save(p);
-            return postDto;
-        }).orElseThrow(()-> new SingleEntityNotFoundException(id.toString(), Post.class));
-    }
-    */
 
+    // TODO
+    //public Post putPost(Long id, PostDto postDto, UserEntity user){
+    //    repository.findById(id).map(p->{
+    //        p.setTitle(postDto.getTitle());
+    //        p.setText(postDto.getText());
+    //        p.setDoc(postDto.getDoc());
+    //        repository.save(p);
+    //        return postDto;
+    //    }).orElseThrow(()-> new SingleEntityNotFoundException(id.toString(), Post.class));
+    //}
+
+
+    // TODO
     public void delete(Long id){
-        repository.findById(id).orElseThrow(()->
+        Post post = repository.findById(id).orElseThrow(()->
                 new SingleEntityNotFoundException(id.toString(), Post.class));
+        post.getDoc();
         if(repository.findById(id).isPresent())
             repository.deleteById(id);
     }

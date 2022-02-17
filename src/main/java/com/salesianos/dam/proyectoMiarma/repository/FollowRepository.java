@@ -18,10 +18,10 @@ public interface FollowRepository extends JpaRepository<Follow, FollowPK> {
             )
             from Follow f JOIN f.follower c JOIN f.following u
             where f.accepted = :accepted
-            and u.nick = nick
+            and u.nick = :nick
             """)
     List<FollowDto> findByAccepted(
             @Param("accepted") boolean accepted,
-            @Param("currentUser") String nick);
+            @Param("nick") String nick);
 
 }

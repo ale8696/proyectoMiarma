@@ -13,7 +13,8 @@ public class PostDto {
     // Attributes
     private String title;
     private String text;
-    private File doc;
+    private String doc;
     private boolean privacity;
+    private String Owner;
 
 }

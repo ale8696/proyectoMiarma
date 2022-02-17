@@ -19,7 +19,7 @@ public class Post {
 
     private String title;
     private String text;
-    private File doc;
+    private String doc;
     private boolean privacity;
 
     @ManyToOne
