@@ -2,6 +2,7 @@ package com.salesianos.dam.proyectoMiarma.users.model;
 
 import com.salesianos.dam.proyectoMiarma.model.Follow;
 import com.salesianos.dam.proyectoMiarma.model.Post;
+import com.salesianos.dam.proyectoMiarma.validation.anotations.Unique;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.NaturalId;
@@ -14,6 +15,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import javax.persistence.*;
 import java.net.URI;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -30,10 +32,12 @@ public class UserEntity implements UserDetails {
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
+    @Unique
     @NaturalId
     @Column(unique = true, updatable = false)
     private String email;
 
+    @Unique
     private String nick;
 
     private String password;
@@ -47,14 +51,17 @@ public class UserEntity implements UserDetails {
     @OneToMany(mappedBy = "owner")
     private List<Post> posts;
 
+    @Builder.Default
     @OneToMany
-    private List<Follow> following;
+    private List<Follow> following = new ArrayList<>();;
 
+    @Builder.Default
     @OneToMany
-    private List<Follow> followers;
+    private List<Follow> followers = new ArrayList<>();
 
+    @Builder.Default
     @Enumerated(EnumType.STRING)
-    private UserRole role;
+    private UserRole role = UserRole.USER;
 
     @CreatedDate
     private LocalDateTime createdAt;
@@ -70,7 +77,7 @@ public class UserEntity implements UserDetails {
 
     @Override
     public String getUsername() {
-        return email;
+        return nick;
     }
 
     @Override

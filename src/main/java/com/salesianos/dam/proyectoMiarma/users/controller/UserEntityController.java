@@ -18,6 +18,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
+
 @RestController
 @RequiredArgsConstructor
 public class UserEntityController {
@@ -28,21 +30,19 @@ public class UserEntityController {
     private final JwtProvider jwtProvider;
 
     @PostMapping("/auth/register")
-    public ResponseEntity<LoginUserDto> registerUser(@RequestBody CreateUserDto newUser) {
-
-        //LoginUserDto loginUserDto = userEntityService.createUser(newUser);
-//
-        //return ResponseEntity.status(HttpStatus.CREATED).body(loginUserDto);
+    public ResponseEntity<LoginUserDto> registerUser(@Valid @RequestBody CreateUserDto newUser) {
 
         if (newUser.getPassword().contentEquals(newUser.getPassword2())) {
 
 
-            UserEntity userEntity = userDtoConverter.createUserDtoToUserEntity(newUser);
+            UserEntity userEntity = userEntityService.createUser(newUser);
 
             Authentication authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(
-                            userEntity.getNick(),
-                            userEntity.getPassword()
+                            userEntity,
+                            userEntity.getPassword(),
+                            userEntity.getAuthorities()
+
                     )
             );
 

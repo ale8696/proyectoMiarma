@@ -23,6 +23,7 @@ public class JwtProvider {
     public static final String TOKEN_HEADER = "Authorization";
     public static final String TOKEN_PREFIX = "Bearer ";
 
+
     @Value("${jwt.secret:elsecretoibericoeselquemasmegusta}")
     private String jwtSecret;
 
@@ -61,7 +62,7 @@ public class JwtProvider {
     }
 
     public Long getUserIdFromJwt(String token) {
-        return Long.getLong(parser.parseClaimsJws(token).getBody().getSubject());
+        return Long.valueOf(parser.parseClaimsJws(token).getBody().getSubject());
     }
 
     public boolean validateToken(String token) {
