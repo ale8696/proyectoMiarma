@@ -32,12 +32,11 @@ public class UserEntity implements UserDetails {
     @Column(name = "id", updatable = false, nullable = false)
     private Long id;
 
-    @Unique
-    @NaturalId
+
     @Column(unique = true, updatable = false)
     private String email;
 
-    @Unique
+
     private String nick;
 
     private String password;
@@ -52,11 +51,11 @@ public class UserEntity implements UserDetails {
     private List<Post> posts;
 
     @Builder.Default
-    @OneToMany
+    @OneToMany(mappedBy = "follower")
     private List<Follow> following = new ArrayList<>();;
 
     @Builder.Default
-    @OneToMany
+    @OneToMany(mappedBy = "following")
     private List<Follow> followers = new ArrayList<>();
 
     @Builder.Default

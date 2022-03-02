@@ -11,14 +11,14 @@ import javax.validation.ConstraintValidatorContext;
 public class UniqueValidator implements ConstraintValidator<Unique, String> {
 
     @Autowired
-    private UserEntityRepository repositorio;
+    private UserEntityRepository repository;
 
     @Override
     public void initialize(Unique constraintAnnotation) { }
 
     @Override
     public boolean isValid(String nick, ConstraintValidatorContext context) {
-        return StringUtils.hasText(nick) && !repositorio.findFirstByNick(nick).isEmpty();
+        return StringUtils.hasText(nick) && !repository.findFirstByNick(nick).isEmpty();
     }
 }
 

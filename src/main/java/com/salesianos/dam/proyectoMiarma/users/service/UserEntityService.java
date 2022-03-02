@@ -19,12 +19,12 @@ public class UserEntityService extends BaseService<UserEntity, Long, UserEntityR
 
     @Override
     public UserEntity loadUserByUsername(String email) throws UsernameNotFoundException {
-        return this.repository.findFirstByEmail(email)
+        return repository.findFirstByEmail(email)
                 .orElseThrow(()-> new UsernameNotFoundException(email + " not found"));
     }
 
     public UserEntity loadUserByNick(String nick) throws UsernameNotFoundException {
-        return this.repository.findFirstByNick(nick)
+        return repository.findFirstByNick(nick)
                 .orElseThrow(()-> new UsernameNotFoundException(nick + " not found"));
     }
 
@@ -33,6 +33,5 @@ public class UserEntityService extends BaseService<UserEntity, Long, UserEntityR
         return repository.save(userDtoConverter.createUserDtoToUserEntity(newUser));
 
     }
-
 
 }
